@@ -1,0 +1,25 @@
+{
+  "name": "pdf-flattener-service",
+  "version": "0.0.0",
+  "description": "A service to flatten and store copies of PDFs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanselarij-vlaanderen/pdf-flattener-service.git"
+  },
+  "keywords": [
+    "musemtech",
+    "mu-service",
+    "microservice",
+    "semantic.works"
+  ],
+  "author": "Sergio Fenoll <sergio.fenoll@redpencil.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kanselarij-vlaanderen/pdf-flattener-service/issues"
+  },
+  "homepage": "https://github.com/kanselarij-vlaanderen/pdf-flattener-service#readme"
+}
