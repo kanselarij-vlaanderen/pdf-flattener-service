@@ -1,9 +1,7 @@
-// see https://github.com/mu-semtech/mu-javascript-template for more info
+import { app, errorHandler } from 'mu';
 
-import { app, query, errorHandler } from 'mu';
-
-app.get('/', function( req, res ) {
-  res.send('Hello mu-javascript-template');
-} );
+app.get('/', function(_req, res) {
+  res.send('👋 pdf-flattener service here');
+});
 
 app.use(errorHandler);
