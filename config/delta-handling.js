@@ -9,12 +9,7 @@ import { createMuFile } from '../lib/file';
 import { getFileFromPiece, linkFlattenedPDFToPiece } from "./piece";
 
 const KANSELARIJ_GRAPH = 'http://mu.semte.ch/graphs/organizations/kanselarij';
-const SIGNING_GRAPH = 'http://mu.semte.ch/graphs/system/signing';
 
-/**
- * @param {Object} deltas
- * @returns {Object[]}
- */
 function getInterestedQuads(deltas) {
   const inserts = deltas
         .map((delta) => delta.inserts)
@@ -85,10 +80,10 @@ export default async function handler(deltas) {
     };
 
     console.log(`Creating virtual mu-file ${virtualFile.uri}`);
-    await createMuFile(virtualFile, physicalFile, SIGNING_GRAPH, updateSudo);
+    await createMuFile(virtualFile, physicalFile, KANSELARIJ_GRAPH, updateSudo);
 
     console.log(`Linking virtual mu-file ${virtualFile.uri} to unsigned piece ${unsignedPieceUri}`);
-    await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, SIGNING_GRAPH, updateSudo);
+    await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, KANSELARIJ_GRAPH, updateSudo);
   }
   console.log('Finished handling incoming deltas');
 }
