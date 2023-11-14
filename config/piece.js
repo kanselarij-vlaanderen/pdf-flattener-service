@@ -1,4 +1,3 @@
-import path from 'path';
 import {
   sparqlEscapeUri,
   sparqlEscapeString,
@@ -66,7 +65,8 @@ WHERE {
 
 async function linkFlattenedPDFToPiece(pieceUri, fileUri, graph=APPLICATION_GRAPH, updateFunction=update) {
   const id = uuid();
-  const flattenedPieceUri = path.join(PIECE_RESOURCE_BASE, id);
+  const flattenedPieceUri = `${PIECE_RESOURCE_BASE}${id}`;
+  console.debug(graph);
   const now = new Date();
 
   const queryString = `
