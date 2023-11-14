@@ -3,7 +3,7 @@ import path from 'path';
 import { uuid } from 'mu';
 import { updateSudo, querySudo } from '@lblod/mu-auth-sudo';
 
-import { FILE_RESOURCE_BASE, FILE_STORAGE_PATH, LOG_INCOMING_DELTAS } from '../cfg';
+import { FILE_RESOURCE_BASE, FILE_STORAGE_PATH } from '../cfg';
 import flattenPDF from '../lib/flatten-pdf';
 import { createMuFile } from '../lib/file';
 import { getFileFromPiece, linkFlattenedPDFToPiece } from "./piece";
@@ -15,15 +15,26 @@ function getInterestedQuads(deltas) {
         .map((delta) => delta.inserts)
         .reduce((allInserts, inserts) => allInserts.concat(inserts));
 
-  const interestedQuads = inserts
+  const filteredOnPredicate = inserts
         .filter(({ predicate }) => predicate.value === 'http://mu.semte.ch/vocabularies/ext/handtekenen/ongetekendStuk');
+
+  const interestedQuads = filteredOnPredicate
+        .filter((quad, index) =>
+          // Array#findIndex returns the first element that matches
+          // So we're iterating over the array and getting the quad and its
+          // index, and every time we look for the index of the first occurrence
+          // of that quad. The outer filter then checks if the iteration's index
+          // matches the index returned by findIndex, in which case it's the
+          // first occurence and we store it. Any latter occurrences of the quad
+          // get discarded
+          filteredOnPredicate.findIndex(
+            (_quad) => quad.subject.value === _quad.subject.value
+          ) === index)
+
   return interestedQuads;
 }
 
-export default async function handler(deltas) {
-  if (LOG_INCOMING_DELTAS) {
-    console.log('Received deltas:', JSON.stringify(deltas, null, 2));
-  }
+export default async function handle(deltas) {
   const interestedQuads = getInterestedQuads(deltas);
   if (interestedQuads.length === 0) {
     console.log('Deltas contained no interesting quads, not doing anything');
@@ -40,7 +51,7 @@ export default async function handler(deltas) {
     const unsignedFile = await getFileFromPiece(unsignedPieceUri, KANSELARIJ_GRAPH, querySudo);
 
     if (unsignedFile === null || signedFile?.extension !== 'pdf') {
-      console.log(`Skipped interesting quad because I couldn't find the unsigned file or because the signed file was not a PDF: ${JSON.stringify(quad, null, 2)}`)
+      console.log(`Skipped interesting quad because I couldn't find the unsigned file or because the signed file was not a PDF: ${JSON.stringify(quad)}`)
       continue;
     }
     console.log(`Handling signed piece: ${signedPieceUri}`);
