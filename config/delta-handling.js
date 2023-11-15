@@ -72,8 +72,8 @@ export default async function handle(deltas) {
     const now = new Date();
     const virtualFile = {
       id: virtualFileUuid,
-      uri: path.join(FILE_RESOURCE_BASE, virtualFileUuid),
-      name: `${unsignedFile.pieceName} (kopie).pdf`,
+      uri: FILE_RESOURCE_BASE + virtualFileUuid,
+      name: `${unsignedFile.pieceName} (ondertekend).pdf`,
       extension: 'pdf',
       size: flattenedPdfBytes.byteLength,
       created: now,

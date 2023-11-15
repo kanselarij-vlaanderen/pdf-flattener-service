@@ -93,15 +93,16 @@ INSERT {
   }
 }
 WHERE {
-  ${sparqlEscapeUri(pieceUri)} dct:title ?name ;
-    besluitvorming:vertrouwelijkheidsniveau ?prevAccessLevel
-
+  GRAPH ${sparqlEscapeUri(graph)} {
+    ${sparqlEscapeUri(pieceUri)} dct:title ?name ;
+      besluitvorming:vertrouwelijkheidsniveau ?prevAccessLevel .
+  }
   BIND(
     IF(?prevAccessLevel IN (${sparqlEscapeUri(ACCESS_LEVEL_PUBLIC)}),
     ${sparqlEscapeUri(ACCESS_LEVEL_GOVERNMENT)},
     ?prevAccessLevel)
   AS ?accessLevel)
-  BIND(CONCAT(?name, " (ondertekend kopie)") AS ?copyName)
+  BIND(CONCAT(?name, " (ondertekend)") AS ?copyName)
 }`;
   await updateFunction(queryString);
 }
