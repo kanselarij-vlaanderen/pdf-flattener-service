@@ -3,7 +3,7 @@ import fs from 'fs';
 
 const APPLICATION_GRAPH = process.env.MU_APPLICATION_GRAPH || 'http://mu.semte.ch/application';
 const MU_APPLICATION_FILE_STORAGE_PATH = process.env.MU_APPLICATION_FILE_STORAGE_PATH || '';
-const FILE_RESOURCE_BASE = process.env.FILE_RESOURCE_BASE || 'http://mu.semte.ch/services/pdf-flattener-service/files/';
+const FILE_RESOURCE_BASE = 'http://themis.vlaanderen.be/id/bestand/';
 
 const LOG_INCOMING_DELTAS = isTruthy(process.env.LOG_INCOMING_DELTAS);
 
