@@ -37,11 +37,8 @@ function getInterestedQuads(deltas) {
 export default async function handle(deltas) {
   const interestedQuads = getInterestedQuads(deltas);
   if (interestedQuads.length === 0) {
-    console.log('Deltas contained no interesting quads, not doing anything');
     return;
   }
-
-  console.log(`Found ${interestedQuads.length} quads in deltas that we will handle`);
 
   for (const quad of interestedQuads) {
     const signedPieceUri = quad.subject.value;
@@ -96,5 +93,4 @@ export default async function handle(deltas) {
     console.log(`Linking virtual mu-file ${virtualFile.uri} to unsigned piece ${unsignedPieceUri}`);
     await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, KANSELARIJ_GRAPH, updateSudo);
   }
-  console.log('Finished handling incoming deltas');
 }
