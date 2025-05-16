@@ -24,6 +24,7 @@
   "homepage": "https://github.com/kanselarij-vlaanderen/pdf-flattener-service#readme",
   "dependencies": {
     "@lblod/mu-auth-sudo": "^0.6.1",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "pdf-flatten": "0.1.3"
   }
 }
