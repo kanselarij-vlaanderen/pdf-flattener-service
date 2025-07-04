@@ -40,8 +40,9 @@ WHERE {
       dbpedia:fileExtension ?extension ;
       dct:created ?created .
     ?physicalUri nie:dataSource ?file .
+
+    FILTER NOT EXISTS { ?piece sign:getekendStukKopie ?signedPieceCopy }
   }
-  FILTER NOT EXISTS { ?piece sign:getekendStukKopie ?signedPieceCopy }
 } LIMIT 1`;
 
   const response = await queryFunction(queryString);
