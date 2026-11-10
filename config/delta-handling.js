@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { uuid } from 'mu';
-import { updateSudo, querySudo } from '@lblod/mu-auth-sudo';
+import { update, query, uuid } from 'mu';
 
 import { FILE_RESOURCE_BASE, FILE_STORAGE_PATH } from '../cfg';
 import flattenPDF from '../lib/flatten-pdf';
@@ -44,8 +43,8 @@ export default async function handle(deltas) {
     const signedPieceUri = quad.subject.value;
     const unsignedPieceUri = quad.object.value;
 
-    const signedFile = await getFileFromPiece(signedPieceUri, KANSELARIJ_GRAPH, querySudo);
-    const unsignedFile = await getFileFromPiece(unsignedPieceUri, KANSELARIJ_GRAPH, querySudo);
+    const signedFile = await getFileFromPiece(signedPieceUri, KANSELARIJ_GRAPH, (q) => query(q, {sudo: true}));
+    const unsignedFile = await getFileFromPiece(unsignedPieceUri, KANSELARIJ_GRAPH, (q) => query(q, {sudo: true}));
 
     if (unsignedFile === null || signedFile?.extension !== 'pdf') {
       console.log(`Skipped interesting quad because I couldn't find the unsigned file or because the signed file was not a PDF: ${JSON.stringify(quad)}`)
@@ -88,9 +87,9 @@ export default async function handle(deltas) {
     };
 
     console.log(`Creating virtual mu-file ${virtualFile.uri}`);
-    await createMuFile(virtualFile, physicalFile, KANSELARIJ_GRAPH, updateSudo);
+    await createMuFile(virtualFile, physicalFile, KANSELARIJ_GRAPH, (q) => update(q, {sudo: true}));
 
     console.log(`Linking virtual mu-file ${virtualFile.uri} to unsigned piece ${unsignedPieceUri}`);
-    await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, KANSELARIJ_GRAPH, updateSudo);
+    await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, KANSELARIJ_GRAPH, (q) => update(q, {sudo: true}));
   }
 }

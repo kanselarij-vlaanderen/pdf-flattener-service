@@ -15,6 +15,7 @@ Add the following snippet to your `docker-compose.override.yml`:
     environment:
       NODE_ENV: "development"
       LOG_INCOMING_DELTAS: "true"
+      ALLOW_MU_AUTH_SUDO: "true"
     volumes:
       - ../pdf-flattener-service:/app
       - ../pdf-flattener-service/config:/config
