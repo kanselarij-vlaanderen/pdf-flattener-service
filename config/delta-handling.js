@@ -1,14 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { uuid } from 'mu';
 import { updateSudo, querySudo } from '@lblod/mu-auth-sudo';
 
-import { FILE_RESOURCE_BASE, FILE_STORAGE_PATH } from '../cfg';
-import flattenPDF from '../lib/flatten-pdf';
-import { createMuFile } from '../lib/file';
+import { KANSELARIJ_GRAPH } from '../cfg';
+import flattenMuFile from '../lib/flatten-file';
 import { getFileFromPiece, linkFlattenedPDFToPiece } from "./piece";
-
-const KANSELARIJ_GRAPH = 'http://mu.semte.ch/graphs/organizations/kanselarij';
 
 function getInterestedQuads(deltas) {
   const inserts = deltas
@@ -53,42 +47,12 @@ export default async function handle(deltas) {
     }
     console.log(`Handling signed piece: ${signedPieceUri}`);
 
-    const signedFilePath = signedFile.physicalUri.replace('share://', '/share/');
-
-    const pdfBytes = fs.readFileSync(signedFilePath);
-    const flattenedPdfBytes = await flattenPDF(pdfBytes);
-    console.log(`Generated flattened PDF for signed file ${signedFile.uri}`);
-
-    const physicalFileUuid = uuid();
-    const virtualFileUuid = uuid();
-
-    const flattenedFilePath = path.join(FILE_STORAGE_PATH, `${physicalFileUuid}.pdf`);
-    fs.writeFileSync(flattenedFilePath, flattenedPdfBytes);
-    console.log(`Writing flattened PDF to ${flattenedFilePath}`);
-
-    const now = new Date();
-    const virtualFile = {
-      id: virtualFileUuid,
-      uri: FILE_RESOURCE_BASE + virtualFileUuid,
-      name: `${unsignedFile.pieceName} (ondertekend).pdf`,
-      extension: 'pdf',
-      size: flattenedPdfBytes.byteLength,
-      created: now,
-      format: 'application/pdf',
-    };
-
-    const physicalFile = {
-      id: physicalFileUuid,
-      uri: flattenedFilePath.replace('/share/', 'share://'),
-      name: `${physicalFileUuid}.pdf`,
-      extension: 'pdf',
-      size: flattenedPdfBytes.byteLength,
-      created: now,
-      format: 'application/pdf',
-    };
-
-    console.log(`Creating virtual mu-file ${virtualFile.uri}`);
-    await createMuFile(virtualFile, physicalFile, KANSELARIJ_GRAPH, updateSudo);
+    const virtualFile = await flattenMuFile(
+      signedFile,
+      `${unsignedFile.pieceName} (ondertekend).pdf`,
+      KANSELARIJ_GRAPH,
+      updateSudo
+    );
 
     console.log(`Linking virtual mu-file ${virtualFile.uri} to unsigned piece ${unsignedPieceUri}`);
     await linkFlattenedPDFToPiece(unsignedPieceUri, virtualFile.uri, KANSELARIJ_GRAPH, updateSudo);
